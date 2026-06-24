@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * 컨트롤러 전역에서 발생하는 예외를 일괄 처리
@@ -37,11 +38,21 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = switch (fieldError.getField()) {
             case "email" -> ErrorCode.INVALID_EMAIL_FORMAT;
             case "password" -> ErrorCode.WEAK_PASSWORD;
+            case "title" -> ErrorCode.INVALID_TITLE;
             default -> ErrorCode.INVALID_INPUT;
         };
 
         return ResponseEntity.status(errorCode.getStatus())
                 .body(ErrorResponse.of(errorCode));
+    }
+
+    /**
+     * multipart 한도 초과 시 Tomcat이 컨트롤러 진입 전에 던지는 예외 처리
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException e) {
+        return ResponseEntity.status(ErrorCode.FILE_TOO_LARGE.getStatus())
+                .body(ErrorResponse.of(ErrorCode.FILE_TOO_LARGE));
     }
 
     /**
