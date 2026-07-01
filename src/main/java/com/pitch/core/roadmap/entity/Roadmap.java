@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "roadmaps")
@@ -20,7 +21,7 @@ public class Roadmap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curriculum_id", nullable = false, unique = true)

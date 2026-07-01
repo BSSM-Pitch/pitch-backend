@@ -3,9 +3,11 @@ package com.pitch.core.roadmap.dto;
 import com.pitch.core.roadmap.entity.RoadmapTask;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 public class RoadmapTaskResponse {
-    private final Long id;
+    private final UUID id;
     private final String title;
     private final String description;
     private final String startDate;

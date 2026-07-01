@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class RoadmapService {
     private final RoadmapTaskRepository roadmapTaskRepository;
     private final UserRepository userRepository;
 
-    public RoadmapResponse getRoadmap(Long curriculumId, String email) {
+    public RoadmapResponse getRoadmap(UUID curriculumId, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         Roadmap roadmap = roadmapRepository.findByCurriculum(curriculum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROADMAP_NOT_FOUND));
@@ -37,7 +38,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public RoadmapCreateResponse createRoadmap(Long curriculumId, RoadmapCreateRequest request, String email) {
+    public RoadmapCreateResponse createRoadmap(UUID curriculumId, RoadmapCreateRequest request, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         if (roadmapRepository.existsByCurriculum(curriculum)) {
             throw new BusinessException(ErrorCode.ROADMAP_ALREADY_EXISTS);
@@ -62,7 +63,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public RoadmapCreateResponse updateRoadmap(Long curriculumId, RoadmapUpdateRequest request, String email) {
+    public RoadmapCreateResponse updateRoadmap(UUID curriculumId, RoadmapUpdateRequest request, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         Roadmap roadmap = roadmapRepository.findByCurriculum(curriculum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROADMAP_NOT_FOUND));
@@ -72,7 +73,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public void deleteRoadmap(Long curriculumId, String email) {
+    public void deleteRoadmap(UUID curriculumId, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         Roadmap roadmap = roadmapRepository.findByCurriculum(curriculum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROADMAP_NOT_FOUND));
@@ -80,7 +81,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public TaskUpdateResponse updateTaskCompletion(Long curriculumId, Long taskId, TaskUpdateRequest request, String email) {
+    public TaskUpdateResponse updateTaskCompletion(UUID curriculumId, Long taskId, TaskUpdateRequest request, String email) {
         getCurriculum(curriculumId, email);
         RoadmapTask task = roadmapTaskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TASK_NOT_FOUND));
@@ -88,7 +89,7 @@ public class RoadmapService {
         return new TaskUpdateResponse(task);
     }
 
-    private Curriculum getCurriculum(Long curriculumId, String email) {
+    private Curriculum getCurriculum(UUID curriculumId, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return curriculumRepository.findByIdAndUser(curriculumId, user)
