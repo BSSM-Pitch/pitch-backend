@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,7 @@ public class QuizService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public QuizJobResponse generateQuiz(Long curriculumId, QuizGenerateRequest request, String email) {
+    public QuizJobResponse generateQuiz(UUID curriculumId, QuizGenerateRequest request, String email) {
         validateTypes(request.getTypes());
         Curriculum curriculum = getCurriculum(curriculumId, email);
         QuizJob job = QuizJob.create(curriculum, 8);
@@ -44,19 +45,19 @@ public class QuizService {
         return new QuizJobResponse(job);
     }
 
-    public QuizJobResponse getJobStatus(Long curriculumId, String jobId, String email) {
+    public QuizJobResponse getJobStatus(UUID curriculumId, String jobId, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         QuizJob job = quizJobRepository.findByIdAndCurriculum(jobId, curriculum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.QUIZ_JOB_NOT_FOUND));
         return new QuizJobResponse(job);
     }
 
-    public QuizListResponse getQuizList(Long curriculumId, String email) {
+    public QuizListResponse getQuizList(UUID curriculumId, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         return new QuizListResponse(quizRepository.findByCurriculumOrderByCreatedAtDesc(curriculum));
     }
 
-    public QuizDetailResponse getQuiz(Long curriculumId, Long quizId, String email) {
+    public QuizDetailResponse getQuiz(UUID curriculumId, UUID quizId, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         Quiz quiz = quizRepository.findByIdAndCurriculum(quizId, curriculum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.QUIZ_NOT_FOUND));
@@ -64,7 +65,7 @@ public class QuizService {
     }
 
     @Transactional
-    public QuizSubmitResponse submitQuiz(Long curriculumId, Long quizId, QuizSubmitRequest request, String email) {
+    public QuizSubmitResponse submitQuiz(UUID curriculumId, UUID quizId, QuizSubmitRequest request, String email) {
         Curriculum curriculum = getCurriculum(curriculumId, email);
         Quiz quiz = quizRepository.findByIdAndCurriculum(quizId, curriculum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.QUIZ_NOT_FOUND));
@@ -86,7 +87,7 @@ public class QuizService {
 
     @Async
     @Transactional
-    public void generateQuizAsync(String jobId, Long curriculumId, int count, List<String> types) {
+    public void generateQuizAsync(String jobId, UUID curriculumId, int count, List<String> types) {
         try {
             QuizJob job = quizJobRepository.findById(jobId).orElseThrow();
             Curriculum curriculum = curriculumRepository.findById(curriculumId).orElseThrow();
@@ -115,7 +116,7 @@ public class QuizService {
         });
     }
 
-    private Curriculum getCurriculum(Long curriculumId, String email) {
+    private Curriculum getCurriculum(UUID curriculumId, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return curriculumRepository.findByIdAndUser(curriculumId, user)

@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/curricula/{curriculumId}")
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class QuizController {
 
     @PostMapping("/quiz/generate")
     public ResponseEntity<QuizJobResponse> generateQuiz(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @RequestBody @Valid QuizGenerateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -28,7 +30,7 @@ public class QuizController {
 
     @GetMapping("/quiz/jobs/{jobId}/status")
     public ResponseEntity<QuizJobResponse> getJobStatus(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @PathVariable String jobId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(quizService.getJobStatus(curriculumId, jobId, userDetails.getUsername()));
@@ -36,23 +38,23 @@ public class QuizController {
 
     @GetMapping("/quizzes")
     public ResponseEntity<QuizListResponse> getQuizList(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(quizService.getQuizList(curriculumId, userDetails.getUsername()));
     }
 
     @GetMapping("/quizzes/{quizId}")
     public ResponseEntity<QuizDetailResponse> getQuiz(
-            @PathVariable Long curriculumId,
-            @PathVariable Long quizId,
+            @PathVariable UUID curriculumId,
+            @PathVariable UUID quizId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(quizService.getQuiz(curriculumId, quizId, userDetails.getUsername()));
     }
 
     @PostMapping("/quizzes/{quizId}/submit")
     public ResponseEntity<QuizSubmitResponse> submitQuiz(
-            @PathVariable Long curriculumId,
-            @PathVariable Long quizId,
+            @PathVariable UUID curriculumId,
+            @PathVariable UUID quizId,
             @RequestBody QuizSubmitRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(quizService.submitQuiz(

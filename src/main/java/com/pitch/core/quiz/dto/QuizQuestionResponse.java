@@ -6,10 +6,11 @@ import com.pitch.core.quiz.entity.QuizQuestion;
 import lombok.Getter;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 public class QuizQuestionResponse {
-    private final Long id;
+    private final UUID id;
     private final String type;
     private final String question;
     private final List<String> options;

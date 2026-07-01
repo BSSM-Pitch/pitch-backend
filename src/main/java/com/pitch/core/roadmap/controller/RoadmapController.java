@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/curricula/{curriculumId}/roadmap")
 @RequiredArgsConstructor
@@ -19,14 +21,14 @@ public class RoadmapController {
 
     @GetMapping
     public ResponseEntity<RoadmapResponse> getRoadmap(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(roadmapService.getRoadmap(curriculumId, userDetails.getUsername()));
     }
 
     @PostMapping
     public ResponseEntity<RoadmapCreateResponse> createRoadmap(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @RequestBody @Valid RoadmapCreateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -35,7 +37,7 @@ public class RoadmapController {
 
     @PatchMapping
     public ResponseEntity<RoadmapCreateResponse> updateRoadmap(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @RequestBody @Valid RoadmapUpdateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(roadmapService.updateRoadmap(curriculumId, request, userDetails.getUsername()));
@@ -43,7 +45,7 @@ public class RoadmapController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteRoadmap(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @AuthenticationPrincipal UserDetails userDetails) {
         roadmapService.deleteRoadmap(curriculumId, userDetails.getUsername());
         return ResponseEntity.noContent().build();
@@ -51,7 +53,7 @@ public class RoadmapController {
 
     @PatchMapping("/tasks/{taskId}")
     public ResponseEntity<TaskUpdateResponse> updateTaskCompletion(
-            @PathVariable Long curriculumId,
+            @PathVariable UUID curriculumId,
             @PathVariable Long taskId,
             @RequestBody TaskUpdateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {

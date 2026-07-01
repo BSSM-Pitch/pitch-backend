@@ -3,10 +3,12 @@ package com.pitch.core.roadmap.dto;
 import com.pitch.core.roadmap.entity.Roadmap;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 public class RoadmapCreateResponse {
-    private final Long curriculumId;
-    private final Long roadmapId;
+    private final UUID curriculumId;
+    private final UUID roadmapId;
     private final String title;
     private final String createdAt;
     private final String updatedAt;
